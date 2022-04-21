@@ -1,0 +1,39 @@
+.content table th {
+    height: 7rem;
+    width: 150px ;
+    padding-right: 10px;
+    margin: 0;
+    text-align: right;
+}
+
+.content table td {
+    width: 480px ;
+}
+
+.content table td textarea {
+    width: 100% ;
+}
+.name{
+    width: 100%;
+}
+
+.email{
+    width: 100%;
+}
+
+.from_button{
+    text-align: center;
+    margin-top: 10px;
+}
+
+.from_button a{
+    color: white;
+    font-size: 3rem;
+    background-color: #008B8B;
+    padding: 10px;
+    text-decoration: none;
+}
+
+.from_button a:hover{
+    opacity: 0.5;
+}
