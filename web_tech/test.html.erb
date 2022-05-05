@@ -1,0 +1,55 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body>
+    <h1>テスト！！！！！！！！！！！！！</h1>
+
+    <% require 'pg' %>
+
+    <% connection = PG::connect(dbname: "goya") %>
+    <% connection.internal_encoding = "UTF-8" %>
+
+    <form action="indicate.cgi" method="POST">
+       下記に文字を入力してください<br><br>
+      <input type="text"  name="input" ><br>
+      <input type="submit" name="送信" >
+    </form>
+
+    <% result = connection.exec("select crops.give_for ,ROUND(AVG(weight))  from crops JOIN prices ON crops.give_for = prices.give_for WHERE crops.give_for!='自家消費' GROUP BY crops.give_for;") %>
+     <!-- 19行目をROUND(AVG(weight))　AS '平均重量'Tという風に変更するとエラーになる(忘れず27行目の"round"を"平均重量"に変えても) -->
+
+    <% result_low_quality = connection.exec("select count(*) count,quality from crops where not(quality = true) group by quality ;") %>
+    <%  data = [] %>
+    <% data2 = [] %>
+
+    <% result.each do |record| %>
+      <%  data << "ゴーヤの平均重量：#{record["round"]}　売った相手：#{record["give_for"]}" %>
+    <% end %>
+
+    <% result_low_quality.each do |record| %>
+      <%  data2 << "低品質ゴーヤの個数：#{record["count"]}　品質：#{record["quality"]}" %>
+    <% end %>
+
+
+    <form action="goya.cgi" method="POST">
+       下記のボタンを押すと、ゴーヤの平均重量と売った相手の情報ページに飛びます<br><br>
+       <!-- valueには、送りたいデータを代入する -->
+       <!-- name="goya"を、情報の目印とする -->
+      <input type="text" name="goya" value="<%= data.join(' ') %>">
+      <input type="submit" name="送信" >
+    </form>
+
+    <form action="goya2.cgi" method="POST">
+       下記のボタンを押すと、低品質ゴーヤの合計個数の情報ページに飛びます<br><br>
+       <!-- valueには、送りたいデータを代入する -->
+       <!-- name="goya"を、情報の目印とする -->
+      <input type="text" name="goya" value="<%= data2.join(' ') %>">
+      <input type="submit" name="送信" >
+    </form>
+    
+
+
+    
+  </body>
+</html>
